@@ -1,0 +1,116 @@
+#:kivy 1.0.9
+
+<LoginScreen>:
+    GridLayout:
+        cols: 1
+        padding: 20
+        spacing: 10
+
+        Label:
+            text: "Username"
+            font_name: "AbyssinicaSIL"
+        TextInput:
+            id: username
+            multiline: False
+            font_name: "AbyssinicaSIL"
+
+        Label:
+            text: "Password"
+            font_name: "AbyssinicaSIL"
+        TextInput:
+            id: password
+            password: True
+            multiline: False
+            font_name: "AbyssinicaSIL"
+
+        Button:
+            text: "Login"
+            on_press: root.do_login(username.text, password.text)
+
+<MainScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 10
+        spacing: 10
+
+        # File Selection
+        BoxLayout:
+            size_hint_y: 0.1
+            spacing: 5
+            Label:
+                text: "Select Text File:"
+                size_hint_x: 0.4
+                font_name: "AbyssinicaSIL"
+                halign: 'right'
+                valign: 'middle'
+                text_size: self.size
+            Spinner:
+                id: file_spinner
+                text: root.selected_text_file
+                values: root.available_text_files
+                on_text: root.on_text_file_selected(self.text)
+                size_hint_x: 0.6
+                font_name: "AbyssinicaSIL"
+
+        # Line Display
+        Label:
+            id: line_display
+            text: root.current_line
+            font_size: 20
+            font_name: "AbyssinicaSIL"
+            size_hint_y: 0.3
+            halign: 'center'
+            valign: 'middle'
+            text_size: self.size
+
+        # Navigation
+        BoxLayout:
+            size_hint_y: 0.1
+            spacing: 5
+            Label:
+                text: "Line #:"
+                size_hint_x: 0.2
+                font_name: "AbyssinicaSIL"
+            TextInput:
+                id: line_number_input
+                multiline: False
+                size_hint_x: 0.4
+                font_name: "AbyssinicaSIL"
+            Button:
+                text: "Go"
+                size_hint_x: 0.4
+                on_press: root.go_to_line()
+
+        BoxLayout:
+            size_hint_y: 0.15
+            spacing: 5
+            Button:
+                text: "Prev"
+                on_press: root.prev_line()
+            Button:
+                text: "Next"
+                on_press: root.next_line()
+
+        # Recording Controls
+        BoxLayout:
+            size_hint_y: 0.15
+            spacing: 5
+            Button:
+                # AUTOMATIC TEXT UPDATE based on the Python 'is_recording' property
+                text: "Stop Recording" if root.is_recording else "Start Recording"
+                background_color: (1, 0, 0, 1) if root.is_recording else (0, 0.7, 0, 1)
+                on_press: root.stop_recording() if root.is_recording else root.start_recording()
+
+        # Save Path Info (For Debugging on your Phone)
+        Label:
+            text: "Saving to: " + root.recordings_directory
+            font_size: '10sp'
+            size_hint_y: 0.05
+            color: (0.7, 0.7, 0.7, 1)
+            shorten: True
+            shorten_from: 'left'
+
+        Button:
+            text: "Exit"
+            size_hint_y: 0.1
+            on_press: app.stop()
