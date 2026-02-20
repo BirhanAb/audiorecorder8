@@ -38,7 +38,8 @@ orientation = landscape
 
 # (list) Permissions 
 # Optimized for Android 14. Note: READ_MEDIA_AUDIO is the modern replacement for READ_EXTERNAL_STORAGE.
-android.permissions = RECORD_AUDIO, READ_MEDIA_AUDIO, INTERNET, WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE
+#android.permissions = RECORD_AUDIO, READ_MEDIA_AUDIO, INTERNET, WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE
+android.permissions = RECORD_AUDIO, READ_MEDIA_AUDIO, WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE, INTERNET
 
 # (int) Target Android API - 34 is Android 14
 android.api = 34
@@ -81,4 +82,5 @@ log_level = 2
 warn_on_root = 1
 
 # (str) Path to build output (relative to spec file)
+
 bin_dir = ./bin
