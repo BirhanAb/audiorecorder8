@@ -1,0 +1,60 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ] 
+
+jobs:
+  build:
+    runs-on: ubuntu-latest 
+    steps:
+    - uses: actions/checkout@v4 
+
+    - name: Get Date for Cache Key
+      id: get-date
+      run: |
+        echo "date=$(/bin/date -u "+%Y%m%d")" >> "$GITHUB_OUTPUT"
+      shell: bash
+
+    - name: Cache Buildozer global directory
+      uses: actions/cache@v4
+      with:
+        path: .buildozer_global
+        key: buildozer-global-v4-${{ hashFiles('buildozer.spec') }}
+        restore-keys: |
+          buildozer-global-v4-
+
+    - name: Cache Buildozer project directory
+      uses: actions/cache@v4
+      with:
+        path: .buildozer
+        key: ${{ runner.os }}-buildozer-project-v4-${{ steps.get-date.outputs.date }}-${{ hashFiles('buildozer.spec') }}
+        restore-keys: |
+          ${{ runner.os }}-buildozer-project-v4-
+
+    - name: Build Debug with Buildozer
+      uses: ArtemSBulgakov/buildozer-action@v1
+      id: buildozer_debug
+      env:
+        USER: root
+        PIP_BREAK_SYSTEM_PACKAGES: 1
+      with:
+        command: buildozer android debug
+        buildozer_version: stable
+
+    - name: Build Release with Buildozer
+      uses: ArtemSBulgakov/buildozer-action@v1
+      id: buildozer_release
+      env:
+        USER: root
+        PIP_BREAK_SYSTEM_PACKAGES: 1
+        BUILDOZER_ALLOW_ORG_TEST_DOMAIN: 1
+      with:
+        command: buildozer android release
+        buildozer_version: stable
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: android-packages
+        path: bin/
